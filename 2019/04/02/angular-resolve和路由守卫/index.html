@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="kelseyyau, yaukelsey@gmail.com">
+  
+  
+  
+  <title>angular-resolve和路由守卫 | 一只迷茫的老布尔</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="前端框架,前端技术,angular,">
+  
+
+  
+    <meta name="description" content="专注于前端开发技术、前端空间数据可视化和WebGIS">
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../css/base.css">
+<link rel="stylesheet" href="../../../../icon/iconfont.css">
+<link rel="stylesheet" href="../../../../css/github-markdown.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+
+  <script src="../../../../js/util.js"></script>
+<script src="../../../../js/valine.min.js"></script>
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js" async></script>
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="../../../../index.html">一只迷茫的老布尔</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="../../../../index.html" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="../../../../archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="../../../../categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="../../../../tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="../../../../friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="../../../../about/" target="_self">
+              关于
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/contact/">
+          
+            <a href="javascript:void(0);" v-else>哈拉真线</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/dongyuanxin" target="_blank">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.zhihu.com/people/godbmw/activities" target="_blank">
+                    知乎
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>angular-resolve和路由守卫</span>
+  </h1>
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2019-04-02
+    </span>
+    
+      <span>
+        分类 : 
+          <a href="../../../../categories/前端框架/">
+            前端框架
+          </a>
+      </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="angular-resolve和路由守卫"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <blockquote>
+<p>参考angular中文网 <a href="https://www.angular.cn/guide/router#milestone-5-route-guards" target="_blank" rel="noopener">路由守卫</a><br><br>参考angular router文章 <a href="https://vsavkin.com/angular-router-understanding-router-state-7b5b95a12eab" target="_blank" rel="noopener">angular router</a></p>
+</blockquote>
+<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>  之前在使用angular框架进行开发时，由于公司对于一些基础的组件和模块已经进行了封装，所以使用时，并没有过多的实践关注路由守卫的一些具体使用，只是停留在概念上，很快又忘记了。于是乎，记录下来，方便下次使用。</p>
+<h2 id="2-情景模拟"><a href="#2-情景模拟" class="headerlink" title="2. 情景模拟"></a>2. 情景模拟</h2><p>  在日常的开发中，可能总会有一些需求：</p>
+<ul>
+<li>不同的用户，导航的组件不同</li>
+<li>在进入某一路由初始化组件前，需要先请求一些数据</li>
+<li>在离开当前组件时，需要执行一些操作</li>
+</ul>
+<p>上述需求，均对应有不同的路由守卫来执行相应的操作</p>
+<p>三种主要路由守卫钩子：</p>
+<ul>
+<li>Resolve</li>
+<li>CanActivate</li>
+<li>CanDeactivate</li>
+</ul>
+<h2 id="3-使用介绍"><a href="#3-使用介绍" class="headerlink" title="3.使用介绍"></a>3.使用介绍</h2><h3 id="3-1-resolve"><a href="#3-1-resolve" class="headerlink" title="3.1 resolve"></a>3.1 resolve</h3><p>  resolve钩子，是用于在路由跳转并在生命周期钩子ngOnit()之前，先获取用于初始化组件的数据。</p>
+<p>  如： AppComponent =&gt; DemoComponent</p>
+<p>  初始化DemoComponent组件之前，需要先异步请求获取到初始化组件所需的数据，我们通过依赖注入，注入DemoResolverService来进行操作，通过该方法可以返回一个 Promise、一个 Observable 来支持异步方式，或者直接返回一个值来支持同步方式。所需文件范例如下：</p>
+<h5 id="demo-resolve-service-ts"><a href="#demo-resolve-service-ts" class="headerlink" title="demo-resolve.service.ts"></a>demo-resolve.service.ts</h5><p>demo-resolve服务，用于处理resove方法，返回异步请求结果，需要注意的是resolve需要声明泛型，如本例声明的是一个any类型的可观察对象，具体可根据实际业务声明<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Injectable &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; Resolve, Router, ActivatedRouteSnapshot, RouterStateSnapshot &#125; from &apos;@angular/router&apos;</span><br><span class="line">import &#123; CommonHttpService &#125; from &apos;src/app/net/http/common-http.service&apos;</span><br><span class="line">import &#123; Observable &#125; from &apos;rxjs&apos;</span><br><span class="line">import &#123; map &#125; from &apos;rxjs/operators&apos;</span><br><span class="line"></span><br><span class="line">@Injectable()</span><br><span class="line"></span><br><span class="line">export class DemoResolver implements Resolve&lt;any&gt; &#123;</span><br><span class="line">    constructor(private commonHttpService: CommonHttpService, private kspmapService: KspMapService, private router: Router) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable&lt;any&gt; &#123;</span><br><span class="line">        // 使用commonHttpService请求Config数据</span><br><span class="line">        return this.commonHttpServer.queryConfig().pipe(</span><br><span class="line">            map( (res) =&gt; &#123;</span><br><span class="line">                if (res) &#123;</span><br><span class="line">                    return res</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    // 请求失败跳转到web主页面</span><br><span class="line">                    this.router.navigate([&apos;/web&apos;])</span><br><span class="line">                    return null</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="demo-routing-module-ts"><a href="#demo-routing-module-ts" class="headerlink" title="demo-routing.module.ts"></a>demo-routing.module.ts</h5><p>demo组件路由设置模块，注入demo-resolve.service 服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import &#123; NgModule &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; DemoComponent &#125; from &apos;./demo.component&apos;</span><br><span class="line">import &#123; Routes, RouterModule &#125; from &apos;@angular/router&apos;</span><br><span class="line">import &#123; DemoResolver &#125; from &apos;./demo-resolve.service&apos;</span><br><span class="line"></span><br><span class="line">const routes: Routes = [</span><br><span class="line">    &#123;</span><br><span class="line">        path: &apos;&apos;, </span><br><span class="line">        component: DemoComponent,</span><br><span class="line">        // 在这使用我们定义的DemoResolver服务</span><br><span class="line">        resolve: &#123;</span><br><span class="line">            data: DemoResolver</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">    imports: [RouterModule.forChild(routes)],</span><br><span class="line">    exports: [RouterModule]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">export class DemoRoutingModule &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="demo-component-ts"><a href="#demo-component-ts" class="headerlink" title="demo.component.ts"></a>demo.component.ts</h5><p>demo组件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Component, OnInit &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; ActivatedRoute &#125; from &apos;@angular/router&apos;</span><br><span class="line"></span><br><span class="line">@Component(&#123;</span><br><span class="line">    selector: &apos;app-demo&apos;,</span><br><span class="line">    templateUrl: &apos;./demo.component.html&apos;,</span><br><span class="line">    styleUrls: [&apos;./demo.scss&apos;]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">export class DemoComponent implements OnInit &#123;</span><br><span class="line">    visible = false</span><br><span class="line"></span><br><span class="line">    constructor(private route: ActivatedRoute) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    ngOnInit() &#123;</span><br><span class="line">        // 方法1，通过访问快照的snapshot方式获取数据，使用snapshot只获取一次</span><br><span class="line">        console.log(this.route.snapshot.data)</span><br><span class="line">        </span><br><span class="line">        // 方法2，通过数据订阅的方式获取数据，数据流是动态的</span><br><span class="line">        this.route.data.subscribe( (res) =&gt; &#123;</span><br><span class="line">            console.log(res)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-2-CanActivate"><a href="#3-2-CanActivate" class="headerlink" title="3.2 CanActivate"></a>3.2 CanActivate</h3><p>  在web应用中，存在权限控制类的场景，根据访问者的情况决定是否授予访问某个组件的访问权限，CanActivate就是用于实现此类操作的钩子。</p>
+<p>  具体操作如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 执行ng 指令或者手动创建守卫文件</span><br><span class="line">ng generate guard guard/auth</span><br></pre></td></tr></table></figure>
+<h5 id="auth-guard-ts"><a href="#auth-guard-ts" class="headerlink" title="auth.guard.ts"></a>auth.guard.ts</h5><p>如下代码，本质上AuthGuard是服务，通过依赖注入的方式，注入到路由文件中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Injectable &#125; from &quot;@angular/core&quot;</span><br><span class="line">import &#123; CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router &#125; from &apos;@angular/router&apos;</span><br><span class="line"></span><br><span class="line">@Injectable(&#123;</span><br><span class="line">    providedIn: &apos;root&apos;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">export class AuthGuard implements CanActivate &#123;</span><br><span class="line"></span><br><span class="line">    constructor(public  router: Router) &#123;&#125;</span><br><span class="line">    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean &#123;</span><br><span class="line">        // 获取用户登录的信息</span><br><span class="line">        const userinfo = sessionStorage.getItem(&apos;userinfo&apos;)</span><br><span class="line">        if (userinfo) &#123;</span><br><span class="line">            console.log(&apos;路由守卫验证通过&apos;)</span><br><span class="line">            return true</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            console.log(&apos;路由守卫验证失败&apos;)</span><br><span class="line">            this.router.navigate([&apos;/login&apos;])</span><br><span class="line">            return false</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="app-routing-module-ts"><a href="#app-routing-module-ts" class="headerlink" title="app-routing.module.ts"></a>app-routing.module.ts</h5><p>路由配置文件，添加守卫<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">import &#123; NgModule &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; AppComponent &#125; from &apos;./app.component&apos;</span><br><span class="line">import &#123; Routes, RouterModule &#125; from &apos;@angular/router&apos;</span><br><span class="line">import &#123; AuthGuard &#125; from &apos;./guard/auth.guard&apos;</span><br><span class="line">import &#123; LoginComponent &#125; from &apos;./login/login.component&apos;</span><br><span class="line">const routes: Routes = [</span><br><span class="line">    &#123;</span><br><span class="line">        path: &apos;web&apos;, </span><br><span class="line">        component: appComponent,</span><br><span class="line">        // 在这使用CanActivate守卫</span><br><span class="line">        canActivate: [&apos;AuthGuard&apos;]</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        path: &apos;login&apos;,</span><br><span class="line">        component: LoginComponent</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">    imports: [RouterModule.forChild(routes)],</span><br><span class="line">    exports: [RouterModule]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">export class DemoRoutingModule &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="app-module-ts"><a href="#app-module-ts" class="headerlink" title="app.module.ts"></a>app.module.ts</h5><p>模块文件要注入守卫的服务，即auth.guard.ts<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import &#123; NgModule &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; BrowserModule &#125; from &apos;@angular/platform-browser&apos;</span><br><span class="line">import &#123; AppComponent &#125; from &apos;./app.component&apos;</span><br><span class="line">import &#123; AppRoutingModule &#125; from &apos;./app-routing.module&apos;</span><br><span class="line">import &#123; AuthGuard &#125; from &apos;./guard/auth.guard&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">registerLocaleData(zh)</span><br><span class="line"></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">  declarations: [AppComponent],</span><br><span class="line">  imports: [</span><br><span class="line">    BrowserModule,</span><br><span class="line">  ],</span><br><span class="line">  // 在模块中注入AuthGuard</span><br><span class="line">  providers: [</span><br><span class="line">    AuthGuard</span><br><span class="line">  ],</span><br><span class="line">  bootstrap: [AppComponent]</span><br><span class="line">&#125;)</span><br><span class="line">export class AppModule &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过设置，这样只有用户登录，并在sessionStorage中存储有用户登录信息后，CanActivate守卫返回true，才能跳转到对应的视图，否则返回登录视图</p>
+<h3 id="3-3-CanDeactivate"><a href="#3-3-CanDeactivate" class="headerlink" title="3.3 CanDeactivate"></a>3.3 CanDeactivate</h3><p>官方文档给出的解释是处理未保存的修改。常见应用场景，例如我们去注册一个至关重要的账号前填写各种调查户口似的资料。啪啪啪一顿猛操作，填完了所有表单，这时一般你有两个选择：（1）不提交保存，离开当前页。（2）提交，等待上传成功后跳转成功页面。这个时候，CanDeactivate钩子就充当了一个一品御前侍卫，替你把好关。</p>
+<p>如下示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 运行指令或者手动创建Guard</span><br><span class="line">ng generate guard can-deactivate</span><br></pre></td></tr></table></figure></p>
+<h5 id="can-deactivate-guard-ts"><a href="#can-deactivate-guard-ts" class="headerlink" title="can-deactivate.guard.ts"></a>can-deactivate.guard.ts</h5><p>与CanActivate守卫 和 Resolver不同，在CanDeactivate中，这个接口需要实现的一个泛型正好是当前组件的泛型。比如本例中，我们需要在UserComponent组件中实现组件离开时守卫的功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import &#123; Injectable &#125; from &apos;@angular/core&apos;</span><br><span class="line">import &#123; Observable &#125; from &apos;rxjs&apos;</span><br><span class="line">import &#123; CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot &#125;  from &apos;@angular/router&apos;</span><br><span class="line"></span><br><span class="line">@Injectable(&#123;</span><br><span class="line">    // 表示全局引用</span><br><span class="line">    providedIn: &apos;root&apos;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">export class CanDeactivateGuard implements CanDeactivate&lt;&gt; &#123;</span><br><span class="line">    canDeactive(component: UserComponent) &#123;</span><br><span class="line">        // 使用UserComponent定义的方法</span><br><span class="line">        return component.leaveCurrentPage ? component.leaveCurrentPage() : true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="user-component-ts"><a href="#user-component-ts" class="headerlink" title="user.component.ts"></a>user.component.ts</h5><p> 这里，组件举例，我使用的一个同步方法。如果表单填写内容 this.userinfo信息存在，则返回true。在使用中，可能需要提交到服务器之类的异步处理，这时可以返回一个承诺(Promise)或者是一个可观察对象(Observable)<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">export class UserComponent implements OnInit &#123;</span><br><span class="line">   // leaveCurrentPage方法</span><br><span class="line">   leaveCurrentPage() &#123;</span><br><span class="line">       // 如果表单信息已经填写，返回true</span><br><span class="line">       if (this.userinfo) &#123;</span><br><span class="line">           return true</span><br><span class="line">       &#125;</span><br><span class="line">       return window.confirm(&apos;是否确定要离开当前页面？&apos;)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="user-routing-module-ts"><a href="#user-routing-module-ts" class="headerlink" title="user-routing.module.ts"></a>user-routing.module.ts</h5><p> 配置相应的路由文件<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import &#123; NgModule &#125;             from &apos;@angular/core&apos;;</span><br><span class="line">import &#123; RouterModule, Routes &#125; from &apos;@angular/router&apos;;</span><br><span class="line">import &#123; UserComponent &#125; from  &apos;./user/user.component&apos;</span><br><span class="line">import &#123; CanDeactivateGuard &#125;    from &apos;../can-deactivate.guard&apos;;</span><br><span class="line"></span><br><span class="line">const routes: Routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    path: &apos;user&apos;,</span><br><span class="line">    component: UserComponent,</span><br><span class="line">    canDeactivate: [CanDeactivateGuard]</span><br><span class="line">  &#125;</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">  imports: [</span><br><span class="line">    RouterModule.forChild(routes)</span><br><span class="line">  ],</span><br><span class="line">  exports: [</span><br><span class="line">    UserRouterModule</span><br><span class="line">  ]</span><br><span class="line">&#125;)</span><br><span class="line">export class UserRouterModule &#123; &#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="user-module-ts"><a href="#user-module-ts" class="headerlink" title="user-module.ts"></a>user-module.ts</h5><p>user模块,注入CanDeactivateGuard<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import &#123; NgModule &#125; from &apos;@angular/core&apos;;</span><br><span class="line">import &#123; UserComponent &#125; from  &apos;./user/user.component&apos;</span><br><span class="line">import &#123; CanDeactivateGuard &#125; from &apos;../can-deactivate.guard&apos;;</span><br><span class="line">import &#123; UserRouterModule &#125; from &apos;./user-routing.module.ts&apos;</span><br><span class="line"></span><br><span class="line">@NgModule(&#123;</span><br><span class="line">  declarations: [UserComponent],</span><br><span class="line">  imports: [</span><br><span class="line">    BrowserModule,</span><br><span class="line">    UserRouterModule</span><br><span class="line">  ],</span><br><span class="line">  // 在模块中注入CanDeactivateGuard</span><br><span class="line">  providers: [</span><br><span class="line">    CanDeactivateGuard</span><br><span class="line">  ],</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : Kelsey Yau <br>
+        
+        原文链接 : <a href>http://yoursite.com/2019/04/02/angular-resolve和路由守卫/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qq, weibo, wechat">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">创作不易 | 给我鼓励</p>
+  
+  <button id="reward-btn">
+    
+    <span>打赏</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/wechat.png" alt="微信扫一扫, 向我打赏">
+        <p class="qrcode-meta">微信扫一扫, 向我打赏</p>
+      </div>
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/alipay.png" alt="支付宝扫一扫, 向我打赏">
+        <p class="qrcode-meta">支付宝扫一扫, 向我打赏</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="../../../../tags/前端技术/">
+              #前端技术
+            </a>
+          </span>
+          
+          <span class="span--tag">
+            <a href="../../../../tags/angular/">
+              #angular
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+  <nav class="post-navigation">
+    
+    
+  </nav>
+
+  
+    <a href="#comment" class="comment-anchor"></a>
+<div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+<div id="vcomments"></div>
+
+<script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz",
+      appKey: "WaR7nrzhliHj9aVwdQzkdlGd",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz", "WaR7nrzhliHj9aVwdQzkdlGd");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+      <footer>
+  <p class="site-info">
+    博客已运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+    
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2019, 3, 20).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+  </body>
+
+</html>
