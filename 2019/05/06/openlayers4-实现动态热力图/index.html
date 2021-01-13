@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 
   
-<head><meta name="generator" content="Hexo 3.8.0">
+<head>
   <meta charset="utf-8">
-  <meta name="author" content="kelseyyau, yaukelsey@gmail.com">
+  <meta name="author" content="kelseyyau, yaukelsey@gmail.com" />
   
   
   
@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="前端地理信息可视化,前端技术,openlayers,">
+    <meta name="keywords" content="前端地理信息可视化,前端技术,openlayers," />
   
 
   
@@ -28,13 +28,17 @@
   
 
   <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../../../css/base.css">
+  
+<link rel="stylesheet" href="../../../../css/base.css">
 <link rel="stylesheet" href="../../../../icon/iconfont.css">
 <link rel="stylesheet" href="../../../../css/github-markdown.css">
 <link rel="stylesheet" href="../../../../css/highlight.css">
 
-  <script src="../../../../js/util.js"></script>
+
+  
+<script src="../../../../js/util.js"></script>
 <script src="../../../../js/valine.min.js"></script>
+
 
   
 
@@ -53,7 +57,7 @@
     <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
   
 
-</head>
+<meta name="generator" content="Hexo 5.3.0"></head>
 
   <body>
 
@@ -73,7 +77,10 @@
       
         <li class="nav-item" data-path="/">
           
-            <a href="../../../../index.html" target="_self">
+            <a 
+              href="../../../../index.html"
+              target="_self"
+            >
               主页
             </a>
           
@@ -81,7 +88,10 @@
       
         <li class="nav-item" data-path="/archives/">
           
-            <a href="../../../../archives/" target="_self">
+            <a 
+              href="../../../../archives/"
+              target="_self"
+            >
               归档
             </a>
           
@@ -89,7 +99,10 @@
       
         <li class="nav-item" data-path="/categories/">
           
-            <a href="../../../../categories/" target="_self">
+            <a 
+              href="../../../../categories/"
+              target="_self"
+            >
               分类
             </a>
           
@@ -97,7 +110,10 @@
       
         <li class="nav-item" data-path="/tags/">
           
-            <a href="../../../../tags/" target="_self">
+            <a 
+              href="../../../../tags/"
+              target="_self"
+            >
               标签
             </a>
           
@@ -105,7 +121,10 @@
       
         <li class="nav-item" data-path="/friends/">
           
-            <a href="../../../../friends/" target="_self">
+            <a 
+              href="../../../../friends/"
+              target="_self"
+            >
               友链
             </a>
           
@@ -113,7 +132,10 @@
       
         <li class="nav-item" data-path="/about/">
           
-            <a href="../../../../about/" target="_self">
+            <a 
+              href="../../../../about/"
+              target="_self"
+            >
               关于
             </a>
           
@@ -125,7 +147,10 @@
             <ul class="nav-menu--dropdown">
               
                 <li>
-                  <a href="https://github.com/KelseyYau" target="_blank">
+                  <a 
+                    href="../../../../https:/github.com/KelseyYau" 
+                    target="_blank"
+                  >
                     Github
                   </a>
                 </li>
@@ -199,7 +224,7 @@
     
       <span>
         分类 : 
-          <a href="../../../../categories/前端地理信息可视化/">
+          <a href="../../../../categories/%E5%89%8D%E7%AB%AF%E5%9C%B0%E7%90%86%E4%BF%A1%E6%81%AF%E5%8F%AF%E8%A7%86%E5%8C%96/">
             前端地理信息可视化
           </a>
       </span>
@@ -216,14 +241,14 @@
   <div class="article-content">
     <div class="markdown-body">
       <blockquote>
-<p>参考Openlayers API <a href="https://openlayers.org/en/v4.6.5/apidoc/ol.layer.Heatmap.html" target="_blank" rel="noopener">ol.layer.Heatmap</a><br><br>参考heatmap.js <a href="https://www.patrick-wied.at/static/heatmapjs/" target="_blank" rel="noopener">heatmap.js</a><br></p>
+<p>参考Openlayers API <a target="_blank" rel="noopener" href="https://openlayers.org/en/v4.6.5/apidoc/ol.layer.Heatmap.html">ol.layer.Heatmap</a><br><br>参考heatmap.js <a target="_blank" rel="noopener" href="https://www.patrick-wied.at/static/heatmapjs/">heatmap.js</a><br></p>
 </blockquote>
 <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>openlayers的热力图图层是依据开源库”heatmap.js”封装而成，保留了热力图的相关的配置如半径，模糊度，颜色等的设置等，具体设置见api，这里不再赘述。</p>
 <h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>通过查阅api和官网示例，发现官网示例使用的kml格式文件去加载热力数据文件，而热力图层的数据源source是矢量数据源(ol.source.Vector)，所以加载其他矢量格式的热力数据如(GeoJSON)或者自己生成矢量要素(ol.Feature)构成数据源也是可行的。只是要注意的一点是热力图显示权重依据的是矢量要素要有”weight”属性。</p>
 <p><img src="http://img.kelseyyau.top/heatmapweight.png" alt="image"></p>
 <p>如上图，weight属性可以是字符串或者函数，weight取值范围是0-1，值越大，权重越高。在本例中，我的weight属性是数字类型的发现也没问题呢，但是为了规范，还是转一下字符串吧。</p>
 <p>本例实现动态变化的热力图是采用GeoJSON格式的数据，为了实现较为简单数据的动态，直接使用setInterval函数，实际使用中，应该是有时间选项，通过选择时间节点，显示该时间节点的热力图，业务逻辑上操作，可能会多种多样，这里就不一一展开，这里只实现。</p>
-<p>具体示例如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Earthquakes Heatmap&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://openlayers.org/en/v4.6.5/css/ol.css&quot; type=&quot;text/css&quot;&gt;</span><br><span class="line">    &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;</span><br><span class="line">    &lt;script src=&quot;https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;https://openlayers.org/en/v4.6.5/build/ol.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      var heatData = &#123;</span><br><span class="line">          type: &apos;FeatureCollection&apos;,</span><br><span class="line">          features: [</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 112.40, 31.19 ] &#125;, properties: &#123; weight: 0.9 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.30, 30.60 ] &#125;, properties: &#123; weight: 0.19 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 123.30, 30.60 ] &#125;, properties: &#123; weight: 0.419 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 105.30, 30.60 ] &#125;, properties: &#123; weight: 0.319 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 106.30, 30.60 ] &#125;, properties: &#123; weight: 0.719 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 109.30, 31.60 ] &#125;, properties: &#123; weight: 0.519 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 109.30, 30.60 ] &#125;, properties: &#123; weight: 0.319 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 108.30, 32.60 ] &#125;, properties: &#123; weight: 0.139 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 118.30, 31.60 ] &#125;, properties: &#123; weight: 0.129 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 108.30, 33.60 ] &#125;, properties: &#123; weight: 0.190 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 108.30, 32.60 ] &#125;, properties: &#123; weight: 0.189 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 100.30, 30.60 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 109.30, 30.60 ] &#125;, properties: &#123; weight: 0.119 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 108.30, 31.60 ] &#125;, properties: &#123; weight: 0.200 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 118.30, 30.60 ] &#125;, properties: &#123; weight: 0.300 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.30, 23.60 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 112.214350, 23.3423 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.45656, 22.4545 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.78684, 22.1235 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.43543, 21.4378 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 112.506, 23.234 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.9087, 22.45345 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 113.8764, 23.1234 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 112.4753, 21.948 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &apos;Feature&apos;, geometry: &#123;type: &apos;Point&apos;, &apos;coordinates&apos;: [ 112.10, 23.789 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;</span><br><span class="line">          ]</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      var features = new ol.format.GeoJSON().readFeatures(heatData, &#123;</span><br><span class="line">        dataProjection: &apos;EPSG:4326&apos;,</span><br><span class="line">        featureProjection: &apos;EPSG:3857&apos;</span><br><span class="line">      &#125;)</span><br><span class="line"></span><br><span class="line">      var source = new ol.source.Vector(&#123;</span><br><span class="line">        features: features,</span><br><span class="line">        wrapX: false</span><br><span class="line">      &#125;)</span><br><span class="line"></span><br><span class="line">      var vector = new ol.layer.Heatmap(&#123;</span><br><span class="line">        source: source,</span><br><span class="line">        blur: parseInt(21, 10),</span><br><span class="line">        radius: parseInt(10, 10)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      var raster = new ol.layer.Tile(&#123;</span><br><span class="line">        source: new ol.source.Stamen(&#123;</span><br><span class="line">          layer: &apos;toner&apos;,</span><br><span class="line">          wrapX: false</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      var map = new ol.Map(&#123;</span><br><span class="line">        layers: [raster, vector],</span><br><span class="line">        target: &apos;map&apos;,</span><br><span class="line">        view: new ol.View(&#123;</span><br><span class="line">          center: ol.proj.fromLonLat([113.12345, 23.12345]),</span><br><span class="line">          zoom: 3,</span><br><span class="line">          projection: &apos;EPSG:3857&apos;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      // 模拟数据变化</span><br><span class="line">      function changeHeatData() &#123;</span><br><span class="line">        var data = heatData;</span><br><span class="line">        data.features.forEach( function(value) &#123;</span><br><span class="line">          value.properties.weight = Math.random();</span><br><span class="line">        &#125;)</span><br><span class="line">        return data;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      // 使用定时器模拟动态刷新</span><br><span class="line">      setInterval(function() &#123;</span><br><span class="line">        var data = changeHeatData();</span><br><span class="line">        source.clear();</span><br><span class="line">        features = new ol.format.GeoJSON().readFeatures(data, &#123;</span><br><span class="line">          dataProjection: &apos;EPSG:4326&apos;,</span><br><span class="line">          featureProjection: &apos;EPSG:3857&apos;</span><br><span class="line">        &#125;)</span><br><span class="line">        source.addFeatures(features);</span><br><span class="line">      &#125;, 1000)</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>具体示例如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Earthquakes Heatmap&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link rel&#x3D;&quot;stylesheet&quot; href&#x3D;&quot;https:&#x2F;&#x2F;openlayers.org&#x2F;en&#x2F;v4.6.5&#x2F;css&#x2F;ol.css&quot; type&#x3D;&quot;text&#x2F;css&quot;&gt;</span><br><span class="line">    &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;https:&#x2F;&#x2F;cdn.polyfill.io&#x2F;v2&#x2F;polyfill.min.js?features&#x3D;requestAnimationFrame,Element.prototype.classList,URL&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;https:&#x2F;&#x2F;openlayers.org&#x2F;en&#x2F;v4.6.5&#x2F;build&#x2F;ol.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id&#x3D;&quot;map&quot; class&#x3D;&quot;map&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      var heatData &#x3D; &#123;</span><br><span class="line">          type: &#39;FeatureCollection&#39;,</span><br><span class="line">          features: [</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 112.40, 31.19 ] &#125;, properties: &#123; weight: 0.9 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.30, 30.60 ] &#125;, properties: &#123; weight: 0.19 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 123.30, 30.60 ] &#125;, properties: &#123; weight: 0.419 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 105.30, 30.60 ] &#125;, properties: &#123; weight: 0.319 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 106.30, 30.60 ] &#125;, properties: &#123; weight: 0.719 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 109.30, 31.60 ] &#125;, properties: &#123; weight: 0.519 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 109.30, 30.60 ] &#125;, properties: &#123; weight: 0.319 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 108.30, 32.60 ] &#125;, properties: &#123; weight: 0.139 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 118.30, 31.60 ] &#125;, properties: &#123; weight: 0.129 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 108.30, 33.60 ] &#125;, properties: &#123; weight: 0.190 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 108.30, 32.60 ] &#125;, properties: &#123; weight: 0.189 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 100.30, 30.60 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 109.30, 30.60 ] &#125;, properties: &#123; weight: 0.119 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 108.30, 31.60 ] &#125;, properties: &#123; weight: 0.200 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 118.30, 30.60 ] &#125;, properties: &#123; weight: 0.300 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.30, 23.60 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 112.214350, 23.3423 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.45656, 22.4545 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.78684, 22.1235 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.43543, 21.4378 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 112.506, 23.234 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.9087, 22.45345 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 113.8764, 23.1234 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 112.4753, 21.948 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;,</span><br><span class="line">            &#123; type: &#39;Feature&#39;, geometry: &#123;type: &#39;Point&#39;, &#39;coordinates&#39;: [ 112.10, 23.789 ] &#125;, properties: &#123; weight: 0.1 &#125;&#125;</span><br><span class="line">          ]</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      var features &#x3D; new ol.format.GeoJSON().readFeatures(heatData, &#123;</span><br><span class="line">        dataProjection: &#39;EPSG:4326&#39;,</span><br><span class="line">        featureProjection: &#39;EPSG:3857&#39;</span><br><span class="line">      &#125;)</span><br><span class="line"></span><br><span class="line">      var source &#x3D; new ol.source.Vector(&#123;</span><br><span class="line">        features: features,</span><br><span class="line">        wrapX: false</span><br><span class="line">      &#125;)</span><br><span class="line"></span><br><span class="line">      var vector &#x3D; new ol.layer.Heatmap(&#123;</span><br><span class="line">        source: source,</span><br><span class="line">        blur: parseInt(21, 10),</span><br><span class="line">        radius: parseInt(10, 10)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      var raster &#x3D; new ol.layer.Tile(&#123;</span><br><span class="line">        source: new ol.source.Stamen(&#123;</span><br><span class="line">          layer: &#39;toner&#39;,</span><br><span class="line">          wrapX: false</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      var map &#x3D; new ol.Map(&#123;</span><br><span class="line">        layers: [raster, vector],</span><br><span class="line">        target: &#39;map&#39;,</span><br><span class="line">        view: new ol.View(&#123;</span><br><span class="line">          center: ol.proj.fromLonLat([113.12345, 23.12345]),</span><br><span class="line">          zoom: 3,</span><br><span class="line">          projection: &#39;EPSG:3857&#39;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      &#x2F;&#x2F; 模拟数据变化</span><br><span class="line">      function changeHeatData() &#123;</span><br><span class="line">        var data &#x3D; heatData;</span><br><span class="line">        data.features.forEach( function(value) &#123;</span><br><span class="line">          value.properties.weight &#x3D; Math.random();</span><br><span class="line">        &#125;)</span><br><span class="line">        return data;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      &#x2F;&#x2F; 使用定时器模拟动态刷新</span><br><span class="line">      setInterval(function() &#123;</span><br><span class="line">        var data &#x3D; changeHeatData();</span><br><span class="line">        source.clear();</span><br><span class="line">        features &#x3D; new ol.format.GeoJSON().readFeatures(data, &#123;</span><br><span class="line">          dataProjection: &#39;EPSG:4326&#39;,</span><br><span class="line">          featureProjection: &#39;EPSG:3857&#39;</span><br><span class="line">        &#125;)</span><br><span class="line">        source.addFeatures(features);</span><br><span class="line">      &#125;, 1000)</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure></p>
     </div>
   </div>
   
@@ -232,20 +257,26 @@
         <blockquote>
         
         
-          本文作者 : Kelsey Yau <br>
+          本文作者 : Kelsey Yau <br/>
         
-        原文链接 : <a href>http://kelseyyau.github.io/2019/05/06/openlayers4-实现动态热力图/</a><br>
-        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        原文链接 : <a href="">http://kelseyyau.github.io/2019/05/06/openlayers4-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E7%83%AD%E5%8A%9B%E5%9B%BE/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
     </div>
   
   
   
-    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qq, weibo, wechat">
+    <div class="social-share"
+  style="margin-top: -2rem"
+  data-wechat-qrcode-title="<p>微信扫一扫</p>"
+  data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>"
+   data-sites="qq, weibo, wechat" 
+  
+>
   <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
 </div>
-<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async>
   
 
   
@@ -294,7 +325,7 @@
           <i class="iconfont icon-06tags"></i>标签: 
           
           <span class="span--tag">
-            <a href="../../../../tags/前端技术/">
+            <a href="../../../../tags/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/">
               #前端技术
             </a>
           </span>
@@ -326,7 +357,7 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="../../../04/05/openlayers4-使用fit方法居中矢量要素/" target="_self">openlayers4-使用fit方法居中矢量要素</a>
+        <a href="../../../04/05/openlayers4-%E4%BD%BF%E7%94%A8fit%E6%96%B9%E6%B3%95%E5%B1%85%E4%B8%AD%E7%9F%A2%E9%87%8F%E8%A6%81%E7%B4%A0/" target="_self">openlayers4-使用fit方法居中矢量要素</a>
       </div>
     
     
@@ -490,11 +521,11 @@ if(true){
   <p class="site-info">
     博客已运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)</span>
     <br>
-    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    Theme - <a target="_blank" rel="noopener" href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Powered by <a target="_blank" rel="noopener" href="https://godbmw.com/">GodBMW</a>
     <br>
     
   </p>
-  <p>粤ICP备18062481号</p>
+  <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">粤ICP备18062481号-1</a>
 </footer>
 
 

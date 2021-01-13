@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 
   
-<head><meta name="generator" content="Hexo 3.8.0">
+<head>
   <meta charset="utf-8">
-  <meta name="author" content="kelseyyau, yaukelsey@gmail.com">
+  <meta name="author" content="kelseyyau, yaukelsey@gmail.com" />
   
   
   
@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="前端地理信息可视化,前端技术,openlayers,">
+    <meta name="keywords" content="前端地理信息可视化,前端技术,openlayers," />
   
 
   
@@ -28,13 +28,17 @@
   
 
   <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../../../../css/base.css">
+  
+<link rel="stylesheet" href="../../../../css/base.css">
 <link rel="stylesheet" href="../../../../icon/iconfont.css">
 <link rel="stylesheet" href="../../../../css/github-markdown.css">
 <link rel="stylesheet" href="../../../../css/highlight.css">
 
-  <script src="../../../../js/util.js"></script>
+
+  
+<script src="../../../../js/util.js"></script>
 <script src="../../../../js/valine.min.js"></script>
+
 
   
 
@@ -53,7 +57,7 @@
     <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
   
 
-</head>
+<meta name="generator" content="Hexo 5.3.0"></head>
 
   <body>
 
@@ -73,7 +77,10 @@
       
         <li class="nav-item" data-path="/">
           
-            <a href="../../../../index.html" target="_self">
+            <a 
+              href="../../../../index.html"
+              target="_self"
+            >
               主页
             </a>
           
@@ -81,7 +88,10 @@
       
         <li class="nav-item" data-path="/archives/">
           
-            <a href="../../../../archives/" target="_self">
+            <a 
+              href="../../../../archives/"
+              target="_self"
+            >
               归档
             </a>
           
@@ -89,7 +99,10 @@
       
         <li class="nav-item" data-path="/categories/">
           
-            <a href="../../../../categories/" target="_self">
+            <a 
+              href="../../../../categories/"
+              target="_self"
+            >
               分类
             </a>
           
@@ -97,7 +110,10 @@
       
         <li class="nav-item" data-path="/tags/">
           
-            <a href="../../../../tags/" target="_self">
+            <a 
+              href="../../../../tags/"
+              target="_self"
+            >
               标签
             </a>
           
@@ -105,7 +121,10 @@
       
         <li class="nav-item" data-path="/friends/">
           
-            <a href="../../../../friends/" target="_self">
+            <a 
+              href="../../../../friends/"
+              target="_self"
+            >
               友链
             </a>
           
@@ -113,7 +132,10 @@
       
         <li class="nav-item" data-path="/about/">
           
-            <a href="../../../../about/" target="_self">
+            <a 
+              href="../../../../about/"
+              target="_self"
+            >
               关于
             </a>
           
@@ -125,7 +147,10 @@
             <ul class="nav-menu--dropdown">
               
                 <li>
-                  <a href="https://github.com/KelseyYau" target="_blank">
+                  <a 
+                    href="../../../../https:/github.com/KelseyYau" 
+                    target="_blank"
+                  >
                     Github
                   </a>
                 </li>
@@ -199,7 +224,7 @@
     
       <span>
         分类 : 
-          <a href="../../../../categories/前端地理信息可视化/">
+          <a href="../../../../categories/%E5%89%8D%E7%AB%AF%E5%9C%B0%E7%90%86%E4%BF%A1%E6%81%AF%E5%8F%AF%E8%A7%86%E5%8C%96/">
             前端地理信息可视化
           </a>
       </span>
@@ -216,7 +241,7 @@
   <div class="article-content">
     <div class="markdown-body">
       <blockquote>
-<p>参考Openlayers API <a href="https://openlayers.org/en/v4.6.5/apidoc/ol.View.html" target="_blank" rel="noopener">ol.View</a><br></p>
+<p>参考Openlayers API <a target="_blank" rel="noopener" href="https://openlayers.org/en/v4.6.5/apidoc/ol.View.html">ol.View</a><br></p>
 </blockquote>
 <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><p>居中特定的矢量要素，实际上是一个比较简单的功能，在地图的场景中是一个频繁使用的功能。在没认真发现ol.View.fit方法之前。我之前的实现的方法都是粗暴且、繁琐且差强人意：</p>
 <ul>
@@ -228,7 +253,7 @@
 <li>最后，ol.View中的setCenter() 和 setZoom() 方法居中要素</li>
 </ul>
 <h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>通过查阅api,该方法实际上也是比较简单：<br>fit(geometry | extent, options)<br><br>第一个参数传当前的几何对象，或者几何对象范围extent<br><br>第二个参数传配置项，包括显示容器size尺寸，边距padding，动画和分辨率设置等</p>
-<p>具体示例如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Vector Layer&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://openlayers.org/en/v4.6.5/css/ol.css&quot; type=&quot;text/css&quot;&gt;</span><br><span class="line">    &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;</span><br><span class="line">    &lt;script src=&quot;https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &lt;script src=&quot;https://openlayers.org/en/v4.6.5/build/ol.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id=&quot;map&quot; class=&quot;map&quot;&gt;&lt;/div&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">    var style = new ol.style.Style(&#123;</span><br><span class="line">      fill: new ol.style.Fill(&#123;</span><br><span class="line">        color: &apos;rgba(255, 255, 255, 0.6)&apos;</span><br><span class="line">      &#125;),</span><br><span class="line">      stroke: new ol.style.Stroke(&#123;</span><br><span class="line">        color: &apos;#319FD3&apos;,</span><br><span class="line">        width: 1</span><br><span class="line">      &#125;),</span><br><span class="line">      text: new ol.style.Text(&#123;</span><br><span class="line">        font: &apos;12px Calibri,sans-serif&apos;,</span><br><span class="line">        fill: new ol.style.Fill(&#123;</span><br><span class="line">          color: &apos;#000&apos;</span><br><span class="line">        &#125;),</span><br><span class="line">        stroke: new ol.style.Stroke(&#123;</span><br><span class="line">          color: &apos;#fff&apos;,</span><br><span class="line">          width: 3</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var vectorLayer = new ol.layer.Vector(&#123;</span><br><span class="line">      source: new ol.source.Vector(&#123;</span><br><span class="line">        url: &apos;https://openlayers.org/en/v4.6.5/examples/data/geojson/countries.geojson&apos;,</span><br><span class="line">        format: new ol.format.GeoJSON()</span><br><span class="line">      &#125;),</span><br><span class="line">      style: function(feature) &#123;</span><br><span class="line">        style.getText().setText(feature.get(&apos;name&apos;));</span><br><span class="line">        return style;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var view = new ol.View(&#123;</span><br><span class="line">      center: [0, 0],</span><br><span class="line">      zoom: 1</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var map = new ol.Map(&#123;</span><br><span class="line">      layers: [vectorLayer],</span><br><span class="line">      target: &apos;map&apos;,</span><br><span class="line">      view: view</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var highlightStyle = new ol.style.Style(&#123;</span><br><span class="line">      stroke: new ol.style.Stroke(&#123;</span><br><span class="line">        color: &apos;#f00&apos;,</span><br><span class="line">        width: 1</span><br><span class="line">      &#125;),</span><br><span class="line">      fill: new ol.style.Fill(&#123;</span><br><span class="line">        color: &apos;rgba(255,0,0,0.1)&apos;</span><br><span class="line">      &#125;),</span><br><span class="line">      text: new ol.style.Text(&#123;</span><br><span class="line">        font: &apos;12px Calibri,sans-serif&apos;,</span><br><span class="line">        fill: new ol.style.Fill(&#123;</span><br><span class="line">          color: &apos;#000&apos;</span><br><span class="line">        &#125;),</span><br><span class="line">        stroke: new ol.style.Stroke(&#123;</span><br><span class="line">          color: &apos;#f00&apos;,</span><br><span class="line">          width: 3</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    // 高光图层</span><br><span class="line">    var featureOverlay = new ol.layer.Vector(&#123;</span><br><span class="line">      source: new ol.source.Vector(),</span><br><span class="line">      map: map,</span><br><span class="line">      style: function(feature) &#123;</span><br><span class="line">        highlightStyle.getText().setText(feature.get(&apos;name&apos;));</span><br><span class="line">        return highlightStyle;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var highlight;</span><br><span class="line">    </span><br><span class="line">    // 居中要素函数</span><br><span class="line">    function centerFeature(pixel) &#123;</span><br><span class="line">      // 获取点击像素处的要素</span><br><span class="line">      var feature = map.forEachFeatureAtPixel(pixel, function(feature) &#123;</span><br><span class="line">        return feature;</span><br><span class="line">      &#125;);</span><br><span class="line">      </span><br><span class="line">      // 获取要素对应的几何对象</span><br><span class="line">      var geometry = feature.getGeometry();</span><br><span class="line">      </span><br><span class="line">      // 获取地图容器的尺寸大小</span><br><span class="line">      var size = map.getSize();</span><br><span class="line">      </span><br><span class="line">      // 使用fit居中要素</span><br><span class="line">      view.fit(geometry, &#123;</span><br><span class="line">        size: size,</span><br><span class="line">        padding: [20, 20, 20, 20]</span><br><span class="line">      &#125;)</span><br><span class="line">     </span><br><span class="line">     if (feature !== highlight) &#123;</span><br><span class="line">       if (highlight) &#123;</span><br><span class="line">         featureOverlay.getSource().removeFeature(highlight);</span><br><span class="line">       &#125;</span><br><span class="line">       if (feature) &#123;</span><br><span class="line">         featureOverlay.getSource().addFeature(feature);</span><br><span class="line">       &#125;</span><br><span class="line">       highlight = feature;</span><br><span class="line">     &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    map.on(&apos;click&apos;, function(evt) &#123;</span><br><span class="line">       centerFeature(evt.pixel);</span><br><span class="line">    &#125;);</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>具体示例如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Vector Layer&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;link rel&#x3D;&quot;stylesheet&quot; href&#x3D;&quot;https:&#x2F;&#x2F;openlayers.org&#x2F;en&#x2F;v4.6.5&#x2F;css&#x2F;ol.css&quot; type&#x3D;&quot;text&#x2F;css&quot;&gt;</span><br><span class="line">    &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;https:&#x2F;&#x2F;cdn.polyfill.io&#x2F;v2&#x2F;polyfill.min.js?features&#x3D;requestAnimationFrame,Element.prototype.classList,URL&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;https:&#x2F;&#x2F;openlayers.org&#x2F;en&#x2F;v4.6.5&#x2F;build&#x2F;ol.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id&#x3D;&quot;map&quot; class&#x3D;&quot;map&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">    var style &#x3D; new ol.style.Style(&#123;</span><br><span class="line">      fill: new ol.style.Fill(&#123;</span><br><span class="line">        color: &#39;rgba(255, 255, 255, 0.6)&#39;</span><br><span class="line">      &#125;),</span><br><span class="line">      stroke: new ol.style.Stroke(&#123;</span><br><span class="line">        color: &#39;#319FD3&#39;,</span><br><span class="line">        width: 1</span><br><span class="line">      &#125;),</span><br><span class="line">      text: new ol.style.Text(&#123;</span><br><span class="line">        font: &#39;12px Calibri,sans-serif&#39;,</span><br><span class="line">        fill: new ol.style.Fill(&#123;</span><br><span class="line">          color: &#39;#000&#39;</span><br><span class="line">        &#125;),</span><br><span class="line">        stroke: new ol.style.Stroke(&#123;</span><br><span class="line">          color: &#39;#fff&#39;,</span><br><span class="line">          width: 3</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var vectorLayer &#x3D; new ol.layer.Vector(&#123;</span><br><span class="line">      source: new ol.source.Vector(&#123;</span><br><span class="line">        url: &#39;https:&#x2F;&#x2F;openlayers.org&#x2F;en&#x2F;v4.6.5&#x2F;examples&#x2F;data&#x2F;geojson&#x2F;countries.geojson&#39;,</span><br><span class="line">        format: new ol.format.GeoJSON()</span><br><span class="line">      &#125;),</span><br><span class="line">      style: function(feature) &#123;</span><br><span class="line">        style.getText().setText(feature.get(&#39;name&#39;));</span><br><span class="line">        return style;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var view &#x3D; new ol.View(&#123;</span><br><span class="line">      center: [0, 0],</span><br><span class="line">      zoom: 1</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var map &#x3D; new ol.Map(&#123;</span><br><span class="line">      layers: [vectorLayer],</span><br><span class="line">      target: &#39;map&#39;,</span><br><span class="line">      view: view</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var highlightStyle &#x3D; new ol.style.Style(&#123;</span><br><span class="line">      stroke: new ol.style.Stroke(&#123;</span><br><span class="line">        color: &#39;#f00&#39;,</span><br><span class="line">        width: 1</span><br><span class="line">      &#125;),</span><br><span class="line">      fill: new ol.style.Fill(&#123;</span><br><span class="line">        color: &#39;rgba(255,0,0,0.1)&#39;</span><br><span class="line">      &#125;),</span><br><span class="line">      text: new ol.style.Text(&#123;</span><br><span class="line">        font: &#39;12px Calibri,sans-serif&#39;,</span><br><span class="line">        fill: new ol.style.Fill(&#123;</span><br><span class="line">          color: &#39;#000&#39;</span><br><span class="line">        &#125;),</span><br><span class="line">        stroke: new ol.style.Stroke(&#123;</span><br><span class="line">          color: &#39;#f00&#39;,</span><br><span class="line">          width: 3</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 高光图层</span><br><span class="line">    var featureOverlay &#x3D; new ol.layer.Vector(&#123;</span><br><span class="line">      source: new ol.source.Vector(),</span><br><span class="line">      map: map,</span><br><span class="line">      style: function(feature) &#123;</span><br><span class="line">        highlightStyle.getText().setText(feature.get(&#39;name&#39;));</span><br><span class="line">        return highlightStyle;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    var highlight;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 居中要素函数</span><br><span class="line">    function centerFeature(pixel) &#123;</span><br><span class="line">      &#x2F;&#x2F; 获取点击像素处的要素</span><br><span class="line">      var feature &#x3D; map.forEachFeatureAtPixel(pixel, function(feature) &#123;</span><br><span class="line">        return feature;</span><br><span class="line">      &#125;);</span><br><span class="line">      </span><br><span class="line">      &#x2F;&#x2F; 获取要素对应的几何对象</span><br><span class="line">      var geometry &#x3D; feature.getGeometry();</span><br><span class="line">      </span><br><span class="line">      &#x2F;&#x2F; 获取地图容器的尺寸大小</span><br><span class="line">      var size &#x3D; map.getSize();</span><br><span class="line">      </span><br><span class="line">      &#x2F;&#x2F; 使用fit居中要素</span><br><span class="line">      view.fit(geometry, &#123;</span><br><span class="line">        size: size,</span><br><span class="line">        padding: [20, 20, 20, 20]</span><br><span class="line">      &#125;)</span><br><span class="line">     </span><br><span class="line">     if (feature !&#x3D;&#x3D; highlight) &#123;</span><br><span class="line">       if (highlight) &#123;</span><br><span class="line">         featureOverlay.getSource().removeFeature(highlight);</span><br><span class="line">       &#125;</span><br><span class="line">       if (feature) &#123;</span><br><span class="line">         featureOverlay.getSource().addFeature(feature);</span><br><span class="line">       &#125;</span><br><span class="line">       highlight &#x3D; feature;</span><br><span class="line">     &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    map.on(&#39;click&#39;, function(evt) &#123;</span><br><span class="line">       centerFeature(evt.pixel);</span><br><span class="line">    &#125;);</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure></p>
     </div>
   </div>
   
@@ -237,20 +262,26 @@
         <blockquote>
         
         
-          本文作者 : Kelsey Yau <br>
+          本文作者 : Kelsey Yau <br/>
         
-        原文链接 : <a href>http://kelseyyau.github.io/2019/04/05/openlayers4-使用fit方法居中矢量要素/</a><br>
-        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        原文链接 : <a href="">http://kelseyyau.github.io/2019/04/05/openlayers4-%E4%BD%BF%E7%94%A8fit%E6%96%B9%E6%B3%95%E5%B1%85%E4%B8%AD%E7%9F%A2%E9%87%8F%E8%A6%81%E7%B4%A0/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
         </blockquote>
       </div>
     </div>
   
   
   
-    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qq, weibo, wechat">
+    <div class="social-share"
+  style="margin-top: -2rem"
+  data-wechat-qrcode-title="<p>微信扫一扫</p>"
+  data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>"
+   data-sites="qq, weibo, wechat" 
+  
+>
   <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
 </div>
-<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async>
   
 
   
@@ -299,7 +330,7 @@
           <i class="iconfont icon-06tags"></i>标签: 
           
           <span class="span--tag">
-            <a href="../../../../tags/前端技术/">
+            <a href="../../../../tags/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/">
               #前端技术
             </a>
           </span>
@@ -331,13 +362,13 @@
       <div class="nav-pre">
         <i class="iconfont icon-prev"></i>
         上一篇:
-        <a href="../../02/angular-resolve和路由守卫/" target="_self">angular-resolve和路由守卫</a>
+        <a href="../../02/angular-resolve%E5%92%8C%E8%B7%AF%E7%94%B1%E5%AE%88%E5%8D%AB/" target="_self">angular-resolve和路由守卫</a>
       </div>
     
     
       <div class="nav-next">
         下一篇:
-        <a href="../../../05/06/openlayers4-实现动态热力图/" target="_self">openlayers4-实现动态热力图</a>
+        <a href="../../../05/06/openlayers4-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E7%83%AD%E5%8A%9B%E5%9B%BE/" target="_self">openlayers4-实现动态热力图</a>
         <i class="iconfont icon-next"></i>
       </div>
     
@@ -501,11 +532,11 @@ if(true){
   <p class="site-info">
     博客已运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)</span>
     <br>
-    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    Theme - <a target="_blank" rel="noopener" href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Powered by <a target="_blank" rel="noopener" href="https://godbmw.com/">GodBMW</a>
     <br>
     
   </p>
-  <p>粤ICP备18062481号</p>
+  <a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">粤ICP备18062481号-1</a>
 </footer>
 
 
